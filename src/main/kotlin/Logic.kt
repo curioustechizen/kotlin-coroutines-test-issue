@@ -5,7 +5,7 @@ import kotlin.coroutines.CoroutineContext
 
 interface IRepository{
     fun init()
-    suspend fun getName(): String
+    suspend fun getGreeting(name: String): String
 }
 
 class Repository: IRepository {
@@ -13,11 +13,11 @@ class Repository: IRepository {
         //Do some init here
     }
 
-    override suspend fun getName(): String {
-        log("Inside repo.getName() before delay")
+    override suspend fun getGreeting(name: String): String {
+        log("Inside repo.getGreeting() before delay")
         delay(400)
-        log("Inside repo.getName() after delay")
-        return "World!"
+        log("Inside repo.getGreeting() after delay")
+        return "Hello $name!"
     }
 
 }
@@ -30,10 +30,10 @@ class ViewModel(val repo: IRepository, baseCoroutineContext: CoroutineContext): 
         repo.init()
     }
 
-    fun getName(callback: (String) -> Unit) {
-        log("Inside viewModel.getName()")
+    fun getGreeting(name: String, callback: (String) -> Unit) {
+        log("Inside viewModel.getGreeting()")
         launch {
-            val name = repo.getName()
+            val name = repo.getGreeting(name.toUpperCase())
             callback.invoke(name)
         }
     }

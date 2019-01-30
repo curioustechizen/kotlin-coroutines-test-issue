@@ -14,10 +14,12 @@ class LogicTest {
     @Mock
     private lateinit var repo: IRepository
 
+    val testCoroutineContext = TestCoroutineContext("cr_test")
+
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        viewmodel = ViewModel(repo, TestCoroutineContext("cr_test"))
+        viewmodel = ViewModel(repo, testCoroutineContext)
 
     }
 
@@ -29,9 +31,11 @@ class LogicTest {
 
     @Test
     fun `when ViewModel getName called then it calls repo getName`()  {
-        viewmodel.getName {  }
-        runBlocking<Unit> {
-            verify(repo).getName()
+        viewmodel.getGreeting("foo") {
+            println(it)
+        }
+        runBlocking<Unit>(testCoroutineContext) {
+            verify(repo).getGreeting("FOO")
         }
     }
 }
